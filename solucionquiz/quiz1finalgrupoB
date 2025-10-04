@@ -1,0 +1,178 @@
+
+#include <iostream>
+using namespace std; 
+
+
+int main() {
+    //NIVEL 1
+    // Declaración e inicialización de variables
+    cout << "VARIABLES Y TIPOS DE DATOS" << endl;
+    int entero1 = 7, entero2 = 33;
+    float flotante1 = 3.1416f, flotante2 = 2.718f;
+    char caracter = 'L'; //laura
+    
+    cout << "Enteros: " << entero1 << ", " << entero2 << endl;
+    cout << "Flotantes: " << flotante1 << ", " << flotante2 << endl;
+    cout << "Carácter: " << caracter << endl;
+  
+    /*
+    RESPUESTA PREGUNTA 1,2 
+    DIFERENCIA ENTRE INT, CHAR Y FLOAT 
+    INT= números enteros sin decimales 
+    CHAR= es para un solo caracter ya sea letras, simbolos o algún número (no se pueden utiliar frases ya que es con string)
+    FLOAT= números con decimales como por ejemplo pi 
+    */ 
+    
+    //OPERADORES 
+    cout << "OPERACIONES MATEMÁTICAS EN C++" << endl;
+    int n1,n2, suma, resta,multiplicacion;
+    cout<<"Ingresa el primer número: "<<endl;
+    cin>>n1;
+    cout<<"Ingresa el segundo número: "<<endl;
+    cin>>n2;
+
+    suma = n1+n2;
+    resta= n1-n2;
+    multiplicacion= n1*n2;
+
+    cout << n1 << " + " << n2 << " = " << suma << endl;
+    cout << n1 << " - " << n2 << " = " << resta << endl;
+    cout << n1 << " * " << n2 << " = " << multiplicacion << endl;
+
+    //division
+      if (n2 != 0) {
+         double division = static_cast<double>(n1) / n2;
+        cout << n1 << " / " << n2 << " = " << division << endl;
+    } else {
+        cout << n1 << " / " << n2 << " = ERROR (División por cero)" << endl;
+    }
+    
+    // Módulo (resto/residuo de la división que haremos)
+    int modulo = n1 % n2;
+    cout << "   Módulo: " << n1 << " % " << n2 << " = " << modulo << "\n\n";
+    
+    /*RESPUESTA PREGUNTA 2,2
+    El operador igual a (==) IGUALDAD QUE COMPARA: Comprueba que dos valores con iguales
+    devuelve true si ambos operandos tienen el mismo valor; de lo contrario false
+    El operador no igual a (!=) DESIGUALDAD QUE COMPARA: Comprueba que dos valores son desiguales 
+    devuelve true si los operandos no tienen el mismo valor; de lo contrario false.
+
+    */
+    cout << "EJEMPLO" << endl;
+    int a = 15, b = 8, c = 15;
+    
+    // EN IGUALDAD ==
+    cout << "a == b: " << (a == b) << endl;  
+    cout << "a == c: " << (a == c) << endl;  
+    
+    // EN DESIGUAL != 
+    cout << "a != b: " << (a != b) << endl;  
+    cout << "a != c: " << (a != c) << endl;  
+    
+    /*RESPUESTA PREGUNTA 2,3
+        OPERADORES LOGICOS
+    NOT(!) Invierte el valor booleano. true se vuelve false, y false se vuelve true
+    AND(&&) Es true solo si ambas condiciones son true.
+    OR (||) Es true si al menos una de las condiciones es true. Es false solo si ambas son false
+    */
+
+  
+    //CONDICIONALES 
+    cout << "MAYOR O MENOR DE EDAD COMPROBAR EDAD xd" << endl;
+    cout<<"MENOR O MAYOR DE EDAD"<<endl;
+    int edad;
+    cout<<"Ingresa tu edad: ";
+    cin>>edad;
+    if (edad >= 18) {
+        cout << "Eres mayor de edad"<<endl;
+    }
+    else{
+        cout<<"Eres menor de edad"<<endl;
+    }
+    
+    /*RESPUESTA PREGUNTA 3,2 FUNCIONAMIENTO ELSE IF 
+    Se evalúa la primera condición con if
+    Si es verdadera, ejecuta su bloque de código y salta al final, imprimendo el resultado
+    Si es falsa, evalúa la siguiente condición con else if
+    Este proceso continúa hasta que encuentra una condición verdadera
+    Si ninguna condición se cumple o no llegase a existir, entonces se ejecuta el bloque else (si existe)
+    
+    */
+    cout << "EJEMPLO" << endl;
+    cout << " VERIFICAR EL MAYOR DE 3 NUMEROS" << endl;
+    int num1, num2, num3;
+
+    cout << "Ingresa 3 números: ";
+    cin >> num1 >> num2 >> num3;
+
+    int mayor;
+    if (num1 >= num2 && num1 >= num3) {
+        mayor = n1;
+    } else if (num2 >= num1 && num2 >= num3) {
+        mayor = num2;
+    } else {
+        mayor = num3;
+    }
+
+    cout << "El mayor número es: " << mayor << endl;
+
+    //BUCLES 
+    cout << "SOLO BUCLES C++" << endl;
+    cout << "Imprimiendo números del 1 al 10 con bucle for:" << endl;
+    
+    // Bucle for que imprime del 1 al 10
+    for (int i = 1; i <= 10; i++) {
+        cout << i << " ";
+    }
+    cout << endl;
+
+    //AHORA AL REVES PERO CON WHILE
+    cout << "Imprimiendo números del 10 al 1 con bucle while:" << endl;
+    
+    int i = 10;  
+    // Bucle while que imprime del 10 al 1
+    while (i >= 1) {
+        cout << i << " ";
+        i--;  
+    }
+    cout << endl;
+    
+    cout << "CUALES SON PARES ENTRE EL 1 Y EL 20" << endl;
+    int k = 1; 
+    
+    cout << "Números pares entre 1 y 20 usando do-while:" << endl;
+    
+    do {
+        if (k % 2 == 0) {
+            cout << k << " ";
+        }
+        k++;  
+    } while (k <= 20); 
+    
+    cout << endl;
+    
+    //NIVEL 2
+    cout << "ARRAYS UNIDIMENSIONALES" << endl;
+     int numeros[5];  // Array de 5 enteros
+    
+    cout << "Ingrese 5 números porfa que sean enteros:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << "Número " << i + 1 << ": ";
+        cin >> numeros[i];
+    }
+    
+    cout << "\nArray resultante: ";
+    for (int i = 0; i < 5; i++) {
+        cout << numeros[i] << " ";
+    }
+    cout << endl;
+    
+    /*RESPUESTA PREGUNTA 5,2 
+    ARRAYS BIDIMENSIONALES: Un array bidimensional en C++
+    es una estructura de datos para almacenar elementos
+    en una disposición bidimensional similar a una tabla, osea el array debe tener 2 filas y 2 columnas
+    */
+    
+    
+    return 0;
+}
