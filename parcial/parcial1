@@ -1,1 +1,141 @@
+#include <iostream>
+using namespace std;
 
+/* PARCIAL 1 Solución 
+SECCION A - opción multiple
+1)B - int X = 10;
+Correcta porque se utiliza la sintaxis correcta el int la variable que pues en este caso es X solo un 
+simbolo de igual y el número entero que se desea que en este caso es 10
+
+2)B - 3 3.5
+7/2 es división entera (si no se pone el decimal osea el float, es decir se corta el decimal y da como resultado 3)
+7/2.0 es división con punto flotante, osea se pone un float y da el resultado completo con decimales  (resultado 3.5).
+
+3)B - 0 1 1
+Correcta en C++ los valores booleanos se imprimen como 0 (false) y 1 (true).
+
+4) C-  Entra al else porque el valor es 0 tras la asignación.
+
+5) B- Ejecuta al menos una vez.
+La diferencia es que do-while ejecuta el bloque primero(al menos una vez) y luego evalúa la condición.
+
+6) C- cin >> a >> b;
+Es la sintaxis correcta para leer múltiples valores con cin.
+
+7) A -  11
+Pues simple se realiza primero la multiplicacion de bb*3 para que el resultado se sume con aa
+y de como resultado 11
+
+8) B- void f(int& n);
+
+9) B-  Salta a la siguiente iteración.
+
+10) A-  (3 == 3) && !(2 > 5)
+Esto se puede ver asi 3 es igual a 3, entonces si, osea verdadero, 2>5 es imposible asi que falso
+perooo hay una trampa y es ! que significa no es igual,este va al comienzo y seria No falso, es verdadero
+conclusión verdadero y verdadero igual a verdadero todo
+
+(profesor si no me cree inicie el programa y sabrá que todo es cierto)
+
+SECCION B - predecir la salida
+1)la salida va a tener el valor del número 11
+
+2)0 1 2
+el bucle comienza en 0 y se termina cuando sea 3, por eso solo se imprimen esos números, deben ser
+números menores a 3, no menores o iguales a 3
+3) par
+si es par debido a que 10 % 2 = 0 (es divisible entre 2), por lo tanto es par
+
+4) 3 2 1
+Es un decremento termina cuando el número sea 0, por eso solo llega hasta 1, porquq
+cuando i vale 0 tecnicamente se rompe el ciclo
+
+5) 2  200
+*/
+
+// 3- SECCION C - Implementación de funciones
+
+// C1) Mayor de tres enteros
+int max3(int a, int b, int c) {
+    if (a >= b && a >= c) {
+        return a;
+    } else if (b >= a && b >= c) {
+        return b;
+    } else {
+        return c;
+    }
+}
+
+// C2) Suma de todos los enteros en [a, b]
+int sumaRango(int a, int b) {
+    int suma = 0;
+    for (int i = a; i <= b; i++) {
+        suma += i;
+    }
+    return suma;
+}
+
+// C3 Verificar true si n (no negativo) contiene el dígito d
+bool contieneDigito(int n, int d) {
+    if (n == 0 && d == 0) return true;
+    
+    while (n > 0) {
+        if (n % 10 == d) {
+            return true;
+        }
+        n /= 10;
+    }
+    return false;
+}
+
+// C4 Imprimir la tabla de multiplicar de n
+void tablaMultiplicar(int n) {
+    for (int i = 1; i <= 10; i++) {
+        cout << n << " x " << i << " = " << (n * i) << endl;
+    }
+}
+
+int main()
+{
+    /*std::cout << 7/2 << " " << 7/2.0 << std::endl;
+    
+    bool a=true, b=false; 
+    std::cout << (a&&b) << " " << (a||b) << " " << (!b)<<std::endl;
+    int x = 3;
+    if (x = 0) { 
+    } else { 
+    }
+    std::cout << "El valor final de x es: " << x << std::endl;
+    
+    int aa=5, bb=2;
+    std::cout << aa + bb*3 << '\n';
+    
+    int n=0;
+    while (n<3) {
+    std::cout << n << " "<<std:endl;
+    n++;
+    }
+    
+    int y=10;
+    if (y%2==0) std::cout << "par";
+    else std::cout << "impar";*/
+    
+    // 3- Sección C
+    cout << "=== PRUEBAS SECCION C ===" << endl;
+    
+    // resultado C1
+    cout << "max3(7, 12, 3) = " << max3(7, 12, 3) << endl;
+    
+    // resultado C2
+    cout << "sumaRango(1, 5) = " << sumaRango(1, 5) << endl;
+    
+    // resultado C3
+    cout << "contieneDigito(123, 2) = " << contieneDigito(123, 2) << endl;
+    cout << "contieneDigito(123, 5) = " << contieneDigito(123, 5) << endl;
+    
+    // resultado C4
+    cout << "Tabla del 7:" << endl;
+    tablaMultiplicar(7);
+    
+    return 0;
+}
