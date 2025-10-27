@@ -1,0 +1,72 @@
+#include <iostream>
+using namespace std;
+struct Fraccion {
+    int numerador;
+    int denominador;
+    
+    void mostrar() {
+        cout << numerador << "/" << denominador;
+    }
+    
+    void simplificar() {
+        int a = numerador;
+        int b = denominador;
+        
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        numerador /= a;
+        denominador /= a;
+    }
+    Fraccion sumar(Fraccion otra) {
+        Fraccion resultado;
+        resultado.numerador = numerador * otra.denominador + otra.numerador * denominador;
+        resultado.denominador = denominador * otra.denominador;
+        resultado.simplificar();
+        return resultado;
+    }
+};
+
+int main() {
+    Fraccion f1, f2;
+    
+    cout << "=== CALCULADORA DE FRACCIONES ===" << endl;
+    
+    // Primera fracción con validación
+    cout << endl << "PRIMERA FRACCIÓN:" << endl;
+    cout << "Numerador: ";
+    cin >> f1.numerador;
+    
+    do {
+        cout << "Denominador (no puede ser 0): ";
+        cin >> f1.denominador;
+        if (f1.denominador == 0) {
+            cout << "❌ Error: El denominador no puede ser cero" << endl; // no se puede dividir por 0
+        }
+    } while (f1.denominador == 0);
+    
+    // Segunda fracción con validación
+    cout << endl << "SEGUNDA FRACCIÓN:" << endl;
+    cout << "Numerador: ";
+    cin >> f2.numerador;
+    
+    do {
+        cout << "Denominador (no puede ser 0): ";
+        cin >> f2.denominador;
+        if (f2.denominador == 0) {
+            cout << "❌ Error: El denominador no puede ser cero" << endl;  // no se puede dividir por 0
+        }
+    } while (f2.denominador == 0);
+    
+    cout << endl << "Tus fracciones:" << endl;
+    cout << "Fracción 1: "; f1.mostrar(); cout << endl;
+    cout << "Fracción 2: "; f2.mostrar(); cout << endl;
+    
+    Fraccion resultado = f1.sumar(f2);
+    cout << endl << "La suma es: ";
+    f1.mostrar(); cout << " + "; f2.mostrar(); cout << " = "; resultado.mostrar(); cout << endl;
+    
+    return 0;
+}
