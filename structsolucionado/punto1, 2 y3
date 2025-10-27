@@ -1,0 +1,94 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <cctype>
+using namespace std;
+
+struct Producto {
+    string nombre;
+    double precio = 0.0;
+    int stock = 0;
+    
+    Producto(string nom, double p = 0.0, int s = 0) : nombre(nom), precio(p), stock(s) {}
+    
+    bool disponible() const { return stock > 0; }
+    bool esValido() const { return precio >= 0 && !nombre.empty(); }
+    
+    bool operator==(const Producto& otro) const {
+        string n1 = nombre, n2 = otro.nombre;
+        transform(n1.begin(), n1.end(), n1.begin(), ::tolower);
+        transform(n2.begin(), n2.end(), n2.begin(), ::tolower);
+        return n1 == n2;
+    }
+    
+    bool operator<(const Producto& otro) const {
+        if (precio != otro.precio) return precio < otro.precio;
+        string n1 = nombre, n2 = otro.nombre;
+        transform(n1.begin(), n1.end(), n1.begin(), ::tolower);
+        transform(n2.begin(), n2.end(), n2.begin(), ::tolower);
+        return n1 < n2;
+    }
+    
+    void mostrar() const {
+        cout << nombre << " - $" << precio << " - Stock: " << stock;
+        if (disponible()) cout << " [DISPONIBLE]";
+        cout << endl;
+    }
+};
+
+int main() {
+    cout << "=== BEAUTY SHOP SHINY ===" << endl << endl;
+    
+    // Punto 1
+    cout << "1. CONSTRUCTORES CON VALORES POR DEFECTO:" << endl;
+    Producto p1("Labial");
+    Producto p2("Sombras", 25.50);
+    Producto p3("Brochas", 75.00, 15);
+    p1.mostrar(); p2.mostrar(); p3.mostrar();
+    
+    // Punto 2
+    cout << "\n2. FILTRADO DE PRODUCTOS:" << endl;
+    vector<Producto> productos = {
+        p1, p2, p3, 
+        Producto("", 12.0, 3),           
+        Producto("Rimel", 5.0, 10),
+        Producto("Tinta de labios", 18.0, 8),     
+        Producto("Base", 40.0, 0)        
+    };
+    
+    cout << "Todos los productos:" << endl;
+    for(const auto& p : productos) p.mostrar();
+    
+    // Filtrar productos no válidos
+    productos.erase(remove_if(productos.begin(), productos.end(), 
+                    [](const Producto& p) { return !p.esValido(); }), 
+                    productos.end());
+    
+    cout << "\nProductos válidos:" << endl;
+    for(const auto& p : productos) p.mostrar();
+    
+    cout << "\nProductos válidos Y disponibles:" << endl;
+    for(const auto& p : productos) {
+        if (p.esValido() && p.disponible()) {
+            p.mostrar();
+        }
+    }
+    
+    // Punto 3
+    cout << "\n3. ORDENAMIENTO Y BÚSQUEDA:" << endl;
+    sort(productos.begin(), productos.end());
+    cout << "Ordenados por precio:" << endl;
+    for(const auto& p : productos) p.mostrar();
+    
+    Producto buscado("labial", 0, 0);
+    cout << "\nBuscando 'labial':" << endl;
+    for(const auto& p : productos) {
+        if (p == buscado) {
+            cout << "✓ ";
+            p.mostrar();
+        }
+    }
+    
+    return 0;
+}
