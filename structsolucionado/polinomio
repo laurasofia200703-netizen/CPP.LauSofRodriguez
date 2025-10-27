@@ -1,0 +1,51 @@
+#include <iostream>
+using namespace std;
+
+struct Polinomio {
+    double a, b, c;  // Para polinomio: ax² + bx + c
+    
+    // Mostrar el polinomio
+    void mostrar() {
+        cout << a << "x²";
+        if (b >= 0) cout << " + " << b << "x";
+        else cout << " - " << -b << "x";
+        if (c >= 0) cout << " + " << c;
+        else cout << " - " << -c;
+        cout << endl;
+    }
+    
+    // Calcular el valor para x
+    double calcular(double x) {
+        return a*x*x + b*x + c;
+    }
+};
+
+int main() {
+    Polinomio p;
+    
+    cout << "=== POLINOMIO SIMPLE ===" << endl;
+    cout << "Vamos a crear un polinomio: ax² + bx + c" << endl << endl;
+    
+    cout << "Ingresa el valor de a: ";
+    cin >> p.a;
+    cout << "Ingresa el valor de b: ";
+    cin >> p.b;
+    cout << "Ingresa el valor de c: ";
+    cin >> p.c;
+    
+    cout << endl << "Tu polinomio es: ";
+    p.mostrar();
+    
+    // Evaluar en diferentes puntos
+    double x;
+    cout << endl << "Ingresa un valor para x: ";
+    cin >> x;
+    cout << "P(" << x << ") = " << p.calcular(x) << endl;
+    
+    cout << endl << "Algunos valores:" << endl;
+    cout << "P(0) = " << p.calcular(0) << endl;
+    cout << "P(1) = " << p.calcular(1) << endl;
+    cout << "P(2) = " << p.calcular(2) << endl;
+    
+    return 0;
+}
