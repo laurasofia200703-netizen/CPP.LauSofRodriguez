@@ -1,0 +1,82 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+struct Contacto {
+	string nombre;
+	string telefono;
+	string email;
+
+	void mostrar() {
+		cout << "Nombre: " << nombre << endl;
+		cout << "Teléfono: " << telefono << endl;
+		if (email != "") {
+			cout << "Email: " << email << endl;
+		}
+		cout << "------------" << endl;
+	}
+};
+
+struct Agenda {
+	vector<Contacto> contactos;
+
+	void agregarContacto(string nom, string tel, string emai) {
+		Contacto nuevo;
+		nuevo.nombre = nom;
+		nuevo.telefono = tel;
+		nuevo.email = emai;
+		contactos.push_back(nuevo);
+		cout << "Contacto agregado!" << endl;
+	}
+
+	void mostrarContactos() {
+		if (contactos.empty()) {
+			cout << "No hay contactos" << endl;
+			return;
+		}
+
+		cout << "\n--- LISTA DE CONTACTOS ---" << endl;
+		for (int i = 0; i < contactos.size(); i++) {
+			contactos[i].mostrar();
+		}
+	}
+
+	void buscarContacto(string texto) {
+		bool encontrado = false;
+		cout << "\n--- BUSCANDO: " << texto << " ---" << endl;
+
+		for (int i = 0; i < contactos.size(); i++) {
+			if (contactos[i].nombre.find(texto) != string::npos ||
+			        contactos[i].telefono.find(texto) != string::npos) {
+				contactos[i].mostrar();
+				encontrado = true;
+			}
+		}
+
+		if (!encontrado) {
+			cout << "No se encontraron contactos" << endl;
+		}
+	}
+
+	int contarContactos() {
+		return contactos.size();
+	}
+};
+
+int main() {
+	Agenda miAgenda;
+
+    cout << " BIENVENIDO A TU LISTA DE CONTACTOS " << endl;
+	miAgenda.agregarContacto("Sofia Ospina", "312-1234", "sofi3@email.com");
+	miAgenda.agregarContacto("Edinson Niño", "311-0114", "");
+	miAgenda.agregarContacto("Hannah Rodriguez", "312-1103", "hannah@empresa.com");
+
+	miAgenda.mostrarContactos();
+	miAgenda.buscarContacto("Sofia");
+	miAgenda.buscarContacto("312");
+
+	cout << "Total de contactos: " << miAgenda.contarContactos() << endl;
+
+	return 0;
+}
