@@ -1,0 +1,129 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Producto {
+    int id;
+    string nombre;
+    float precio;
+    int cantidad;
+};
+const int MAX_PRODUCTOS = 50;
+
+struct Inventario {
+    Producto productos[MAX_PRODUCTOS];
+    int totalProductos;
+};
+
+void mostrarMenu() {
+    cout << "\n=== INVENTARIO PARA MINI TIENDA ===" << endl;
+    cout << "1. Agregar producto" << endl;
+    cout << "2. Ver productos" << endl;
+    cout << "3. Buscar producto" << endl;
+    cout << "4. Salir" << endl;
+    cout << "Elige una opcion: ";
+}
+
+void agregarProducto(Inventario &inv) {
+    if (inv.totalProductos >= MAX_PRODUCTOS) {
+        cout << "Inventario lleno!" << endl;
+        return;
+    }
+    
+    Producto p;
+    p.id = inv.totalProductos + 1;
+    
+    cout << "\n--- Agregar Producto ---" << endl;
+    cout << "Nombre: ";
+    cin.ignore();
+    getline(cin, p.nombre);
+    
+    cout << "Precio: ";
+    cin >> p.precio;
+    
+    cout << "Cantidad: ";
+    cin >> p.cantidad;
+    
+    inv.productos[inv.totalProductos] = p;
+    inv.totalProductos++;
+    
+    cout << "Producto agregado! ID: " << p.id << endl;
+}
+void verProductos(Inventario &inv) {
+    if (inv.totalProductos == 0) {
+        cout << "No hay productos en el inventario." << endl;
+        return;
+    }
+    
+    cout << "\n--- Lista de Productos ---" << endl;
+    cout << "ID\tNombre\t\tPrecio\tCantidad" << endl;
+    cout << "--------------------------------" << endl;
+    
+    for (int i = 0; i < inv.totalProductos; i++) {
+        cout << inv.productos[i].id << "\t"
+             << inv.productos[i].nombre << "\t\t"
+             << inv.productos[i].precio << "\t"
+             << inv.productos[i].cantidad << endl;
+    }
+}
+
+void buscarProducto(Inventario &inv) {
+    if (inv.totalProductos == 0) {
+        cout << "No hay productos en el inventario." << endl;
+        return;
+    }
+    string nombreBuscado;
+    cout << "Nombre del producto a buscar: ";
+    cin.ignore();
+    getline(cin, nombreBuscado);
+    
+    bool encontrado = false;
+    
+    for (int i = 0; i < inv.totalProductos; i++) {
+        if (inv.productos[i].nombre.find(nombreBuscado) != string::npos) {
+            cout << "\nProducto encontrado:" << endl;
+            cout << "ID: " << inv.productos[i].id << endl;
+            cout << "Nombre: " << inv.productos[i].nombre << endl;
+            cout << "Precio: " << inv.productos[i].precio << endl;
+            cout << "Cantidad: " << inv.productos[i].cantidad << endl;
+            encontrado = true;
+            break;
+        }
+    }
+    
+    if (!encontrado) {
+        cout << "Producto no encontrado." << endl;
+    }
+}
+
+int main() {
+    Inventario miInventario;
+    miInventario.totalProductos = 0;
+    
+    int opcion;
+    
+    do {
+        mostrarMenu();
+        cin >> opcion;
+        
+        switch (opcion) {
+            case 1:
+                agregarProducto(miInventario);
+                break;
+            case 2:
+                verProductos(miInventario);
+                break;
+            case 3:
+                buscarProducto(miInventario);
+                break;
+            case 4:
+                cout << "¡Hasta luego!" << endl;
+                break;
+            default:
+                cout << "Opcion no valida. Intenta de nuevo." << endl;
+        }
+        
+    } while (opcion != 4);
+    
+    return 0;
+}
