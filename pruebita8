@@ -1,0 +1,64 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <map>
+#include <iomanip>
+
+using namespace std;
+
+typedef struct {
+    char prod[32];
+    int unidades;
+    double precio;
+} Venta;
+
+vector<Venta> cargar_ventas_simuladas() {
+    return {
+        {"Marcadores", 10, 25.50},
+        {"Colores", 25, 15.00},
+        {"acuarelas", 5, 25.50},
+        {"cartuchera", 50, 15.00},
+        {"maleta", 10, 35.00},
+        {"lapices", 20, 5.00}
+    };
+}
+
+void procesar_ventas(const vector<Venta>& ventas) {
+    if (ventas.empty()) return;
+
+    double total_vendido = 0;
+    int num_transacciones = ventas.size();
+    map<string, int> unidades_por_producto;
+
+    for (const auto& v : ventas) {
+        double venta_total_item = v.unidades * v.precio;
+        total_vendido += venta_total_item;
+        unidades_por_producto[v.prod] += v.unidades;
+    }
+
+    string producto_mas_vendido = "";
+    int max_unidades = -1;
+
+    for (const auto& par : unidades_por_producto) {
+        if (par.second > max_unidades) {
+            max_unidades = par.second;
+            producto_mas_vendido = par.first;
+        }
+    }
+
+    double ticket_promedio = total_vendido / num_transacciones;
+
+    cout << endl << "ESTADISTICAS DE VENTAS:" << endl;
+    cout << "Total de transacciones: " << num_transacciones << endl;
+    cout << "Total vendido: $" << fixed << setprecision(2) << total_vendido << endl;
+    cout << "Producto mas vendido: " << producto_mas_vendido << " (" << max_unidades << " unidades)" << endl;
+    cout << "Ticket promedio: $" << fixed << setprecision(2) << ticket_promedio << endl;
+}
+
+int main() {
+
+    vector<Venta> ventas = cargar_ventas_simuladas();
+    procesar_ventas(ventas);
+
+    return 0;
+}
