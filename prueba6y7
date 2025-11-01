@@ -1,0 +1,201 @@
+#include <iostream>
+#include <cstdlib>
+#include <cstddef> 
+using namespace std;
+
+//  EL EJERCICIO 6 (Lista Enlazada) 
+struct Nodo {
+    int x;
+    Nodo *sig;
+};
+
+void push_front(Nodo *&head, int val) {
+    
+    Nodo *nuevo = new Nodo; 
+    nuevo->x = val;
+    nuevo->sig = head;
+    head = nuevo;
+}
+
+void push_back(Nodo *&head, int val) {
+    Nodo *nuevo = new Nodo;
+    nuevo->x = val;
+    nuevo->sig = nullptr;
+    if (head == nullptr) {
+        head = nuevo;
+        return;
+    }
+    Nodo *tmp = head;
+    while (tmp->sig != nullptr)
+        tmp = tmp->sig;
+    tmp->sig = nuevo;
+}
+
+void pop_front(Nodo *&head) {
+    if (head == nullptr) return;
+    Nodo *tmp = head;
+    head = head->sig;
+   
+    delete tmp; 
+}
+
+void clear(Nodo *&head) {
+    while (head != nullptr)
+        pop_front(head);
+}
+
+void print(Nodo *head) {
+    cout << "Lista: ";
+    while (head != nullptr) {
+        cout << head->x << " ";
+        head = head->sig;
+    }
+    cout << endl;
+}
+
+// EJERCICIO 7 
+int doble(int x) {
+    return x * 2;
+}
+
+int cuadrado(int x) {
+    return x * x;
+}
+
+void aplicar(int *a, size_t n, int (*op)(int)) {
+    for (size_t i = 0; i < n; i++) {
+        a[i] = op(a[i]);
+    }
+}
+
+void mostrar(int *a, size_t n) {
+    cout << "Arreglo: ";
+    for (size_t i = 0; i < n; i++)
+        cout << a[i] << " ";
+    cout << endl;
+}
+
+
+
+void menu_ejercicio_6() {
+    Nodo *lista = nullptr;
+    int opcion, valor;
+
+    do {
+        cout << "\n======== MENU EJERCICIO 6 (Lista Enlazada) ========\n";
+        cout << "1. Poner al inicio de la fila\n";
+        cout << "2. Poner al final de la fila\n";
+        cout << "3. Eliminar el primer elemento de la fila\n";
+        cout << "4. Mostrar lista\n";
+        cout << "5. Limpiar lista\n";
+        cout << "0. Regresar al Menu Principal\n";
+        cout<<endl;
+        cout << "Elige una opcion: ";
+        if (!(cin >> opcion)) {
+            cin.clear();
+            cin.ignore(10000, '\n');
+            opcion = -1; 
+            continue;
+        }
+
+        switch (opcion) {
+            case 1:
+                cout << "Valor: "; cin >> valor;
+                push_front(lista, valor);
+                break;
+            case 2:
+                cout << "Valor: "; cin >> valor;
+                push_back(lista, valor);
+                break;
+            case 3:
+                pop_front(lista);
+                break;
+            case 4:
+                print(lista);
+                break;
+            case 5:
+                clear(lista);
+                cout << "Lista limpiada.\n";
+                break;
+        }
+    } while (opcion != 0);
+
+    // Limpiar la lista antes de salir del sub-menú, por si acaso
+    clear(lista); 
+}
+
+void menu_ejercicio_7() {
+   
+    int a[5] = {1, 2, 3, 4, 5}; 
+    int opcion;
+
+    do {
+        cout << "\n======== MENU EJERCICIO 7 (Punteros a Función) ========\n";
+        cout << "Valores Iniciales: {1, 2, 3, 4, 5}\n";
+        cout << "1. Mostrar arreglo actual\n";
+        cout << "2. Aplicar el doble (x*2)\n";
+        cout << "3. Aplicar el cuadrado (x^2) \n";
+        cout << "0. Regresar al Menu Principal\n";
+        cout<<endl;
+        cout << "Elige una opcion: ";
+         if (!(cin >> opcion)) { // Manejo de entrada inválida
+            cin.clear();
+            cin.ignore(10000, '\n');
+            opcion = -1; 
+            continue;
+        }
+
+        switch (opcion) {
+            case 1:
+                mostrar(a, 5);
+                break;
+            case 2:
+                aplicar(a, 5, doble);
+                cout << "Se aplicó DOBLE a todos los elementos.\n";
+                mostrar(a, 5);
+                break;
+            case 3:
+                aplicar(a, 5, cuadrado);
+                cout << "Se aplicó CUADRADO a todos los elementos.\n";
+                mostrar(a, 5);
+                break;
+        }
+    } while (opcion != 0);
+}
+
+// === FUNCIÓN PRINCIPAL ===
+int main() {
+    int opcion_principal;
+
+    do {
+        cout << "\n================ MENU PRINCIPAL ================\n";
+        cout << "1. Ejecutar Ejercicio 6 (Lista Enlazada)\n";
+        cout << "2. Ejecutar Ejercicio 7 (Punteros a Función)\n";
+        cout << "0. Salir del Programa\n";
+        cout<<endl;
+        cout << "Elige una opcion: ";
+        if (!(cin >> opcion_principal)) {
+            cin.clear();
+            cin.ignore(10000, '\n');
+            opcion_principal = -1; 
+            continue;
+        }
+
+        switch (opcion_principal) {
+            case 1:
+                menu_ejercicio_6();
+                break;
+            case 2:
+                menu_ejercicio_7();
+                break;
+            case 0:
+                cout << "Saliendo del programa. ¡Hasta luego!\n";
+                break;
+            default:
+                cout << "Opción no válida. Inténtalo de nuevo.\n";
+                break;
+        }
+    } while (opcion_principal != 0);
+
+    return 0;
+}
