@@ -1,1 +1,237 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>  
+using namespace std;
 
+int **mat_crear(size_t m, size_t n) {
+    int **mat = (int **)malloc(m * sizeof(int *));  
+    for(size_t i = 0; i < m; i++) {
+        mat[i] = (int *)malloc(n * sizeof(int));
+    }
+    return mat;
+}
+
+void mat_destruir(int **A, size_t m) {
+    for(size_t i = 0; i < m; i++) {
+        free(A[i]);
+    }
+    free(A);
+}
+
+void mat_sumas(int **A, size_t m, size_t n, int *sumF, int *sumC) {
+    // Inicializar sumas de columnas
+    for(size_t j = 0; j < n; j++) {
+        sumC[j] = 0;
+    }
+    // Calcular sumas
+    for(size_t i = 0; i < m; i++) {
+        sumF[i] = 0;
+        for(size_t j = 0; j < n; j++) {
+            sumF[i] += A[i][j];
+            sumC[j] += A[i][j];
+        }
+    }
+}
+
+void reverse(int *a, size_t i, size_t j){
+    while(i < j){
+        int temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+        i++;
+        j--;
+    }
+}
+
+void rotar_derecha(int *a, size_t n, size_t k){
+    if(n == 0) return;
+
+    k = k % n;
+
+    if (k == 0) return;
+    
+    reverse(a, 0, n - 1);       
+    reverse(a, 0, k - 1);       
+    reverse(a, k, n - 1);       
+}
+
+void imprimir_arreglo(const int *a, size_t n) {
+    for(size_t i = 0; i < n; i++) {
+        printf("%d ", a[i]);
+    }
+    printf("\n");
+}
+
+void leer_arreglo(int *a, size_t n) {
+    for (size_t i = 0; i < n; i++) {  
+        cout << "Ingrese elemento [" << i << "]: ";
+        cin >> a[i];
+    }
+}
+
+void min_max_prom(const int *a, size_t n, int *minv, int *maxv, double *prom) {
+    if (n == 0) { 
+        *minv = *maxv = 0;
+        *prom = 0.0;
+        return;
+    }
+    
+    const int *p = a;
+    *minv = *maxv = *p;
+    long long suma = 0;
+
+    for (size_t i = 0; i < n; i++) {  
+        if (a[i] < *minv) *minv = a[i];
+        if (a[i] > *maxv) *maxv = a[i];
+        suma += a[i];
+    }
+
+    *prom = static_cast<double>(suma) / n;
+}
+
+size_t normalizar_espacios(const char *in, char *out, size_t outcap) {
+    size_t i = 0, j = 0;
+    int espacio_previo = 0;
+    
+    if(outcap == 0) return 0;
+    
+    // Saltar espacios iniciales
+    while(in[i] != '\0' && isspace((unsigned char)in[i])) {
+        i++;
+    }
+
+    while(in[i] != '\0' && j < outcap - 1) {
+        if(isspace((unsigned char)in[i])) {
+            if(!espacio_previo) {
+                out[j++] = ' ';
+                espacio_previo = 1;
+            }
+        } else {
+            out[j++] = in[i];
+            espacio_previo = 0;
+        }
+        i++;
+    }
+    
+    // Eliminar espacio final si existe
+    if(j > 0 && out[j-1] == ' ') {
+        j--;
+    }
+    
+    out[j] = '\0';
+    return j;
+}
+
+int main() {
+    //ejercicio1
+    size_t n_ejercicio1; 
+    cout << "Ingrese el numero de elementos (1 =< n =< 10^5): ";
+    cin >> n_ejercicio1;
+
+    if (n_ejercicio1 < 1 || n_ejercicio1 > 100000) {
+        cout << "Valor de n fuera del rango permitido.\n";
+        return 1;
+    }
+    
+    int *arreglo = new int[n_ejercicio1];
+
+    leer_arreglo(arreglo, n_ejercicio1);
+
+    int minv, maxv;
+    double prom;
+    min_max_prom(arreglo, n_ejercicio1, &minv, &maxv, &prom);
+
+    cout << "\nMinimo: " << minv;
+    cout << "\nMaximo: " << maxv;
+    cout << "\nPromedio: " << prom << endl;
+    
+    delete[] arreglo; 
+    
+    //ejercicio2
+    int a[] = {1, 2, 3, 4, 5};
+  
+    size_t n_ejercicio2 = sizeof(a) / sizeof(a[0]); 
+    size_t k = 2;
+    
+    printf("\n--- Prueba de Rotación ---\n");
+    printf("Arreglo Original: ");
+    imprimir_arreglo(a, n_ejercicio2);
+    
+    rotar_derecha(a, n_ejercicio2, k);
+    
+    printf("Arreglo Rotado (k=%zu): ", k);
+    imprimir_arreglo(a, n_ejercicio2);
+    
+    cin.ignore();
+    
+    //ejercicio3
+    char entrada[1000];
+    char salida[1000];
+    
+    printf("Ingrese una frase con espacios: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    
+    size_t len = 0;
+    while(entrada[len] != '\0') len++;
+    if(len > 0 && entrada[len-1] == '\n') {
+        entrada[len-1] = '\0';
+    }
+    
+    size_t longitud = normalizar_espacios(entrada, salida, sizeof(salida));
+    
+    printf("Entrada: '%s'\n", entrada);
+    printf("Salida:  '%s'\n", salida);
+    printf("Longitud: %zu\n", longitud);
+    
+    //ejercicio 4
+    size_t m, n;
+    
+    printf("Ingrese número de filas (m): ");
+    scanf("%zu", &m);
+    printf("Ingrese número de columnas (n): ");
+    scanf("%zu", &n);
+    
+    int **matriz = mat_crear(m, n);
+    int *sumF = (int *)malloc(m * sizeof(int));
+    int *sumC = (int *)malloc(n * sizeof(int));
+
+    printf("Ingrese los elementos de la matriz %zux%zu:\n", m, n);
+    for(size_t i = 0; i < m; i++) {
+        for(size_t j = 0; j < n; j++) {
+            printf("Elemento [%zu][%zu]: ", i, j);
+            scanf("%d", &matriz[i][j]);
+        }
+    }
+    
+    // Calcular sumas
+    mat_sumas(matriz, m, n, sumF, sumC);
+    
+    // resultados
+    printf("\nMatriz ingresada:\n");
+    for(size_t i = 0; i < m; i++) {
+        for(size_t j = 0; j < n; j++) {
+            printf("%d ", matriz[i][j]);
+        }
+        printf("\n");
+    }
+    
+    printf("sumF: [");
+    for(size_t i = 0; i < m; i++) {
+        printf("%d%s", sumF[i], (i < m - 1) ? ", " : "");
+    }
+    printf("]\n");
+    
+    printf("sumC: [");
+    for(size_t j = 0; j < n; j++) {
+        printf("%d%s", sumC[j], (j < n - 1) ? ", " : "");
+    }
+    printf("]\n");
+    
+    mat_destruir(matriz, m);
+    free(sumF);
+    free(sumC);
+    
+    return 0;
+}
