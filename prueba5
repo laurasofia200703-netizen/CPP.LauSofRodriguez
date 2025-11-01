@@ -1,0 +1,80 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>  
+using namespace std;
+struct Estudiante {
+    char nombre[40];
+    int edad;
+    double promedio;
+};
+
+
+void ordenarPorPromedio(Estudiante *v, int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (v[i].promedio < v[j].promedio) {
+                Estudiante temp = v[i];
+                v[i] = v[j];
+                v[j] = temp;
+            }
+        }
+    }
+}
+
+
+int buscarNombre(Estudiante *v, int n, const char *clave) {
+    for (int i = 0; i < n; i++) {
+        if (strcmp(v[i].nombre, clave) == 0)
+            return i;
+    }
+    return -1;
+}
+    //ejercicio 5
+    int main() {
+    int n;
+    cout << "Cuantos estudiantes deseas ingresar? ";
+    cin >> n;
+    cin.ignore();
+
+    Estudiante v[100];
+
+
+    for (int i = 0; i < n; i++) {
+        cout << "\nEstudiante #" << i + 1 << endl;
+        cout << "Nombre: ";
+        cin.getline(v[i].nombre, 40);
+        cout << "Edad: ";
+        cin >> v[i].edad;
+        cout << "Promedio: ";
+        cin >> v[i].promedio;
+        cin.ignore();
+    }
+
+    ordenarPorPromedio(v, n);
+
+    cout << "\n--- Top 3 por promedio ---\n";
+    for (int i = 0; i < n && i < 3; i++) {
+        cout << i + 1 << ". " << v[i].nombre
+             << " (Edad: " << v[i].edad
+             << ", Promedio: " << v[i].promedio << ")\n";
+    }
+
+
+    char clave[40];
+    cout << "\nBuscar estudiante por nombre: ";
+    cin.getline(clave, 40);
+
+    int pos = buscarNombre(v, n, clave);
+    if (pos != -1) {
+        cout << "\nEncontrado: " << v[pos].nombre
+             << " (Edad: " << v[pos].edad
+             << ", Promedio: " << v[pos].promedio << ")\n";
+    } else {
+        cout << "\nNo se encontró el estudiante \"" << clave << "\".\n";
+    }
+    
+    return 0;
+
+}
