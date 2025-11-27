@@ -1,0 +1,173 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Producto {
+private:
+    string codigo;
+    string nombre;
+    double precio;
+    int cantidad;
+public:
+    Producto(string c, string n, double p, int cant) : 
+        codigo(c), nombre(n), precio(p >= 0 ? p : 0), cantidad(cant >= 0 ? cant : 0) {}
+    
+    // Getters
+    string getCodigo() const { return codigo; }
+    string getNombre() const { return nombre; }
+    double getPrecio() const { return precio; }
+    int getCantidad() const { return cantidad; }
+    
+    // Setters
+    void setPrecio(double p) { precio = p >= 0 ? p : 0; }
+    void setCantidad(int c) { cantidad = c >= 0 ? c : 0; }
+    
+    double calcularValorTotal() { return precio * cantidad; }
+    
+    void aplicarDescuento(double porcentaje) {
+        if (porcentaje >= 0 && porcentaje <= 100) {
+            precio -= precio * (porcentaje / 100);
+        }
+    }
+    
+    void mostrarInfo() {
+        cout << "Código: " << codigo << ", Nombre: " << nombre 
+             << ", Precio: $" << precio << ", Cantidad: " << cantidad << endl;
+    }
+};
+
+class Inventario {
+private:
+    Producto* productos[100];
+    int numProductos = 0;
+    
+    Producto* buscarProducto(string codigo) {
+        for (int i = 0; i < numProductos; i++) {
+            if (productos[i]->getCodigo() == codigo) {
+                return productos[i];
+            }
+        }
+        return nullptr;
+    }
+    
+public:
+    ~Inventario() {
+        for (int i = 0; i < numProductos; i++) {
+            delete productos[i];
+        }
+    }
+    
+    void agregarProducto() {
+        if (numProductos >= 100) {
+            cout << "Inventario lleno!" << endl;
+            return;
+        }
+        
+        string codigo, nombre;
+        double precio;
+        int cantidad;
+        
+        cout << "Código: "; getline(cin, codigo);
+        cout << "Nombre: "; getline(cin, nombre);
+        cout << "Precio: "; cin >> precio;
+        cout << "Cantidad: "; cin >> cantidad;
+        cin.ignore();
+        
+        productos[numProductos++] = new Producto(codigo, nombre, precio, cantidad);
+        cout << "Producto agregado!" << endl;
+    }
+    
+    void mostrarProductos() {
+        if (numProductos == 0) {
+            cout << "No hay productos" << endl;
+            return;
+        }
+        
+        for (int i = 0; i < numProductos; i++) {
+            cout << i+1 << ". ";
+            productos[i]->mostrarInfo();
+        }
+    }
+    
+    void buscarProducto() {
+        string codigo;
+        cout << "Código: "; getline(cin, codigo);
+        
+        Producto* p = buscarProducto(codigo);
+        if (p) {
+            p->mostrarInfo();
+        } else {
+            cout << "Producto no encontrado" << endl;
+        }
+    }
+    
+    void modificarPrecio() {
+        string codigo;
+        double nuevoPrecio;
+        
+        cout << "Código: "; getline(cin, codigo);
+        Producto* p = buscarProducto(codigo);
+        
+        if (p) {
+            cout << "Nuevo precio: "; cin >> nuevoPrecio;
+            cin.ignore();
+            p->setPrecio(nuevoPrecio);
+            cout << "Precio actualizado!" << endl;
+        } else {
+            cout << "Producto no encontrado" << endl;
+        }
+    }
+    
+    void eliminarProducto() {
+        string codigo;
+        cout << "Código: "; getline(cin, codigo);
+        
+        for (int i = 0; i < numProductos; i++) {
+            if (productos[i]->getCodigo() == codigo) {
+                delete productos[i];
+                for (int j = i; j < numProductos - 1; j++) {
+                    productos[j] = productos[j + 1];
+                }
+                numProductos--;
+                cout << "Producto eliminado!" << endl;
+                return;
+            }
+        }
+        cout << "Producto no encontrado" << endl;
+    }
+};
+
+void mostrarMenu() {
+    cout << "\n=== SISTEMA DE INVENTARIO ===" << endl;
+    cout << "1. Agregar producto" << endl;
+    cout << "2. Mostrar productos" << endl;
+    cout << "3. Buscar producto" << endl;
+    cout << "4. Modificar precio" << endl;
+    cout << "5. Eliminar producto" << endl;
+    cout << "0. Salir" << endl;
+    cout << "Opción: ";
+}
+
+int main() {
+    Inventario inventario;
+    int opcion;
+    
+    do {
+        mostrarMenu();
+        cin >> opcion;
+        cin.ignore();
+        
+        switch(opcion) {
+            case 1: inventario.agregarProducto(); break;
+            case 2: inventario.mostrarProductos(); break;
+            case 3: inventario.buscarProducto(); break;
+            case 4: inventario.modificarPrecio(); break;
+            case 5: inventario.eliminarProducto(); break;
+            case 0: cout << "¡Hasta pronto!" << endl; break;
+            default: cout << "Opción inválida" << endl;
+        }
+        
+    } while(opcion != 0);
+    
+    return 0;
+}
