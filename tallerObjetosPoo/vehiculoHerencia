@@ -1,0 +1,184 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Clase Vehiculo osea para carros de cualquier tipo
+class Vehiculo {
+protected:
+    string marca;
+    string modelo;
+    int anio;
+    double valor;
+public:
+    Vehiculo(string m, string mod, int a, double v) {
+        marca = m;
+        modelo = mod;
+        anio = a;
+        valor = v; /* recomiendo poner valores en dolares o que sean muy pequeños
+        c++ tiene un pequeño incoveniente, al tratar de poner valores mayores a un millón
+        te entrega un resultado con exponencial. todo esto debido a que el int tiene un limite 
+        */
+    }
+    
+    string getMarca() { return marca; }
+    string getModelo() { return modelo; }
+    int getAnio() { return anio; }
+    double getValor() { return valor; }
+    
+    void setMarca(string m) { marca = m; }
+    void setModelo(string mod) { modelo = mod; }
+    void setAnio(int a) { anio = a; }
+    void setValor(double v) { valor = v; }
+    
+    void mostrarInfo() {
+        cout << "Marca: " << marca << ", Modelo: " << modelo 
+             << ", Año: " << anio << ", Valor: $" << valor << endl;
+    }
+};
+
+// Clase Auto heredando de Vehiculo
+class Auto : public Vehiculo {
+private:
+    int numeroPuertas;
+    string tipoCombustible;
+public:
+    // Constructor
+    Auto(string m, string mod, int a, double v, int puertas, string comb)
+        : Vehiculo(m, mod, a, v) {
+        setNumeroPuertas(puertas);
+        setTipoCombustible(comb);
+    }
+    // Getters
+    int getNumeroPuertas() const { return numeroPuertas; }
+    string getTipoCombustible() const { return tipoCombustible; }
+    // Setters
+    void setNumeroPuertas(int p) {
+        if (p > 0) {
+            numeroPuertas = p;
+        } else {
+            cout << "Error: El número de puertas debe ser positivo. Se establecerá a 1." << endl;
+            numeroPuertas = 1;
+        }
+    }
+    void setTipoCombustible(string t) { tipoCombustible = t; }
+    // Sobrescribir mostrarInfo
+    void mostrarInfo() {
+        Vehiculo::mostrarInfo();
+        cout << "Número de puertas: " << numeroPuertas << ", Tipo de combustible: " << tipoCombustible << endl;
+    }
+};
+
+// Clase Motocicleta heredando de Vehiculo
+class Motocicleta : public Vehiculo {
+private:
+    bool tieneAlaron;
+    int cilindrada;
+public:
+    // Constructor
+    Motocicleta(string m, string mod, int a, double v, bool alaron, int cil)
+        : Vehiculo(m, mod, a, v) {
+        setTieneAlaron(alaron);
+        setCilindrada(cil);
+    }
+    // Getters
+    bool getTieneAlaron() const { return tieneAlaron; }
+    int getCilindrada() const { return cilindrada; }
+    // Setters
+    void setTieneAlaron(bool a) { tieneAlaron = a; }
+    void setCilindrada(int c) {
+        if (c > 0) {
+            cilindrada = c;
+        } else {
+            cout << "Error: La cilindrada debe ser positiva. Se establecerá a 1." << endl;
+            cilindrada = 1;
+        }
+    }
+    // Sobrescribir mostrarInfo
+    void mostrarInfo() {
+        Vehiculo::mostrarInfo();
+        cout << "Tiene alerón: " << (tieneAlaron ? "Sí" : "No") << ", Cilindrada: " << cilindrada << " cc" << endl;
+    }
+};
+
+int main() {
+    int opcion;
+    
+    cout << "=== SISTEMA DE REGISTRO DE VEHICULOS (Motocicleta o carro) ===" << endl;
+    cout << "Que tipo de vehiculo deseas registrar?" << endl;
+    cout << "1. Auto" << endl;
+    cout << "2. Motocicleta" << endl;
+    cout << "Opcion: ";
+    cin >> opcion;
+    cin.ignore();
+    
+    if (opcion == 1) {
+        // Registrar un auto
+        string marca, modelo, combustible;
+        int anio, puertas;
+        double valor;
+        
+        cout << "\n--- REGISTRO DE AUTO ---" << endl;
+        cout << "Ingrese la marca: ";
+        getline(cin, marca);
+        cout << "Ingrese el modelo: ";
+        getline(cin, modelo);
+        cout << "Ingrese el año: ";
+        cin >> anio;
+        cout << "Ingrese el valor: $";
+        cin >> valor;
+        cout << "Ingrese el numero de puertas: ";
+        cin >> puertas;
+        cin.ignore();
+        cout << "Ingrese el tipo de combustible (Gasolina/Diesel/Electrico): ";
+        getline(cin, combustible);
+        
+        // Crear el objeto Auto
+        Auto miAuto(marca, modelo, anio, valor, puertas, combustible);
+        
+        // Mostrar la informacion
+        cout << "\n--- VEHICULO REGISTRADO ---" << endl;
+        miAuto.mostrarInfo();
+        
+        // en caso de no querer un vehiculo se ingresa la opcion moto 
+    } else if (opcion == 2) {
+        // Registrar una motocicleta
+        string marca, modelo;
+        int anio, cilindrada, tieneAleronOpcion;
+        double valor;
+        bool tieneAleron;
+        
+        cout << "\n--- REGISTRO DE MOTOCICLETA ---" << endl;
+        cout << "Ingrese la marca: ";
+        getline(cin, marca);
+        cout << "Ingrese el modelo: ";
+        getline(cin, modelo);
+        cout << "Ingrese el año: ";
+        cin >> anio;
+        cout << "Ingrese el valor: $";
+        cin >> valor;
+        cout << "Ingrese la cilindrada (cc): ";
+        cin >> cilindrada;
+        cout << "Tiene aleron? (1 = Si, 0 = No): ";
+        cin >> tieneAleronOpcion;
+        
+        if (tieneAleronOpcion == 1) {
+            tieneAleron = true;
+        } else {
+            tieneAleron = false;
+        }
+        
+        // Crear el objeto Motocicleta
+        Motocicleta miMoto(marca, modelo, anio, valor, tieneAleron, cilindrada);
+        
+        // Mostrar la info
+        cout << "\n--- VEHICULO REGISTRADO ---" << endl;
+        miMoto.mostrarInfo();
+        
+    } else {
+        cout << "Opcion no valida." << endl;
+    }
+    
+    cout << "\nGracias por usar el sistema!" << endl;
+    
+    return 0;
+}
