@@ -1,0 +1,167 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Vehiculo {
+private:
+    string marca;
+    string modelo;
+    int year;
+    double velocidadMaxima;
+
+public:
+    // Constructor
+    Vehiculo(string m, string mod, int a, double v) {
+        marca = m;
+        modelo = mod;
+        setYear(a); // Usamos el setter para validar
+        setVelocidadMaxima(v); // Usamos el setter para validar
+    }
+
+    // Getters
+    string getMarca() const { return marca; }
+    string getModelo() const { return modelo; }
+    int getYear() const { return year; }
+    double getVelocidadMaxima() const { return velocidadMaxima; }
+
+    // Setters con validaciones
+    void setMarca(string m) { marca = m; }
+    void setModelo(string mod) { modelo = mod; }
+    void setYear(int a) {
+        if (a > 1886) {
+           year = a;
+        } else {
+            cout << "Error: El año debe ser mayor a 1886. Se establecerá a 1887." << endl;
+            year = 1887;
+        }
+    }
+    void setVelocidadMaxima(double v) {
+        if (v > 0) {
+            velocidadMaxima = v;
+        } else {
+            cout << "Error: La velocidad máxima debe ser positiva. Se establecerá a 1.0." << endl;
+            velocidadMaxima = 1.0;
+        }
+    }
+
+    // Método para mostrar información
+    void mostrarInfo() {
+        cout << "Marca: " << marca << ", Modelo: " << modelo << ", Año: " << year 
+             << ", Velocidad Máxima: " << velocidadMaxima << " km/h" << endl;
+    }
+
+    // Método para acelerar
+    void acelerar(double incremento) {
+        if (incremento > 0) {
+            velocidadMaxima += incremento;
+        } else {
+            cout << "Error: El incremento debe ser positivo." << endl;
+        }
+    }
+};
+int main() {
+    cout << "=== CONCESIONARIO DE VEHÍCULOS  ===" << endl << endl;
+    
+    // 1. Crear vehículos usando el constructor
+    cout << "--- Creando vehículos ---" << endl;
+    Vehiculo vehiculo1("Toyota", "Corolla", 2023, 180.0);
+        Vehiculo vehiculo2("Ferrari", "Enzo", 2002, 250.0);
+    Vehiculo vehiculo3("Audi", "A8", 2024, 322.0);
+    
+    // Intentar crear un vehículo con datos inválidos
+    cout << "\nIntentando crear vehículo con año inválido:" << endl;
+    Vehiculo vehiculo4("Chevrolet", "Spark", 1800, -50.0);
+    
+    cout << "\n--- Mostrando información de los vehículos ---" << endl;
+    vehiculo1.mostrarInfo();
+    vehiculo2.mostrarInfo();
+    vehiculo3.mostrarInfo();
+    vehiculo4.mostrarInfo();
+    
+    // 2. Usar los getters
+    cout << "\n--- Usando getters ---" << endl;
+    cout << "El vehículo 1 es un " << vehiculo1.getMarca() << " " 
+         << vehiculo1.getModelo() << " del año " << vehiculo1.getYear() << endl;
+    
+    // 3. Usar los setters
+    cout << "\n--- Modificando vehículo 1 con setters ---" << endl;
+    vehiculo1.setMarca("Honda");
+    vehiculo1.setModelo("Civic");
+    vehiculo1.setYear(2021);
+    vehiculo1.setVelocidadMaxima(200.0);
+    cout << "Vehículo 1 después de modificaciones: ";
+    vehiculo1.mostrarInfo();
+    
+    // 4. Probar validaciones de setters
+    cout << "\n--- Probando validaciones ---" << endl;
+    vehiculo2.setYear(1500); // Debe mostrar error
+    vehiculo2.setVelocidadMaxima(-100); // Debe mostrar error
+    
+    // 5. Usar el método acelerar
+    cout << "\n--- Probando aceleración ---" << endl;
+    cout << "Velocidad actual del vehículo 3: " << vehiculo3.getVelocidadMaxima() << " km/h" << endl;
+    vehiculo3.acelerar(50.0);
+    cout << "Después de acelerar 50 km/h: " << vehiculo3.getVelocidadMaxima() << " km/h" << endl;
+    
+    // Intentar acelerar con valor negativo
+    vehiculo3.acelerar(-20.0); // Debe mostrar error
+    
+    // 6. Menú interactivo (opcional)
+    cout << "\n=== MENÚ INTERACTIVO ELIGE TU VEHICULO IDEAL ===" << endl;
+    int opcion;
+    do {
+        cout << "\n1. Mostrar todos los vehículos" << endl;
+        cout << "2. Acelerar un vehículo" << endl;
+        cout << "3. Modificar un vehículo" << endl;
+        cout << "4. Salir" << endl;
+        cout << "Seleccione una opción: ";
+        cin >> opcion;
+        
+        switch(opcion) {
+            case 1:
+                cout << "\n--- Lista de vehículos ---" << endl;
+                vehiculo1.mostrarInfo();
+                vehiculo2.mostrarInfo();
+                vehiculo3.mostrarInfo();
+                break;
+                
+            case 2: {
+                double incremento;
+                cout << "Ingrese el incremento de velocidad para el vehículo 1: ";
+                cin >> incremento;
+                vehiculo1.acelerar(incremento);
+                cout << "Nueva velocidad: " << vehiculo1.getVelocidadMaxima() << " km/h" << endl;
+                break;
+            }
+            
+            case 3: {
+                string nuevaMarca, nuevoModelo;
+                int nuevoYear;
+                cout << "Modificando vehículo 1" << endl;
+                cout << "Nueva marca: ";
+                cin >> nuevaMarca;
+                cout << "Nuevo modelo: ";
+                cin >> nuevoModelo;
+                cout << "Nuevo año: ";
+                cin >> nuevoYear;
+                
+                vehiculo1.setMarca(nuevaMarca);
+                vehiculo1.setModelo(nuevoModelo);
+                vehiculo1.setYear(nuevoYear);
+                
+                cout << "Vehículo actualizado: ";
+                vehiculo1.mostrarInfo();
+                break;
+            }
+            
+            case 4:
+                cout << "¡Adiós!" << endl;
+                break;
+                
+            default:
+                cout << "Opción inválida. Intente de nuevo." << endl;
+        }
+    } while(opcion != 4);
+    
+    return 0;
+}
