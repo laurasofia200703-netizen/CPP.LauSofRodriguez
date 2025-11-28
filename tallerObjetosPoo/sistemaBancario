@@ -3,155 +3,165 @@
 #include <iomanip>
 using namespace std;
 
-// Clase base Empleado
-class Empleado {
+class Cuenta {
 protected:
-    string nombreCompleto;
-    string numeroEmpleado;
-    double salarioBase;
+    string numeroCuenta;
+    string propietario;
+    double saldo;
 
 public:
-    // Constructor
-    Empleado(string nombre, string numero, double salario) {
-        nombreCompleto = nombre;
-        numeroEmpleado = numero;
-        salarioBase = salario;
+    Cuenta(string num, string prop, double sal) 
+        : numeroCuenta(num), propietario(prop), saldo(sal >= 0 ? sal : 0) {}
+    
+    virtual ~Cuenta() {}
+    
+    // Métodos virtuales
+    virtual void depositar(double monto) {
+        if(monto > 0) {
+            saldo += monto;
+            cout << "Depósito exitoso: $" << monto << endl;
+        }
     }
     
-    // Getters
-    string getNombreCompleto() { return nombreCompleto; }
-    string getNumeroEmpleado() { return numeroEmpleado; }
-    double getSalarioBase() { return salarioBase; }
-    
-    // Método virtual para calcular salario
-    virtual double calcularSalarioTotal() {
-        return salarioBase;
+    virtual void retirar(double monto) {
+        if(monto > 0 && monto <= saldo) {
+            saldo -= monto;
+            cout << "Retiro exitoso: $" << monto << endl;
+        } else {
+            cout << "Error en retiro" << endl;
+        }
     }
     
-    // Método virtual para mostrar información
     virtual void mostrarInfo() {
-        cout << "Nombre: " << nombreCompleto << endl;
-        cout << "Número de empleado: " << numeroEmpleado << endl;
-        cout << "Salario base: $" << fixed << setprecision(2) << salarioBase << endl;
+        cout << "Cuenta: " << numeroCuenta << " - " << propietario 
+             << " - Saldo: $" << fixed << setprecision(2) << saldo << endl;
     }
+    
+    double getSaldo() const { return saldo; }
 };
 
-// Clase EmpleadoTiempoCompleto - SIN beneficios, SOLO bono
-class EmpleadoTiempoCompleto : public Empleado {
+class CuentaAhorro : public Cuenta {
 private:
-    double bono;  // Solo tenemos bono, sin beneficios
+    double tasaInteres;
 
 public:
-    // Constructor modificado - sin parámetro de beneficios
-    EmpleadoTiempoCompleto(string nombre, string numero, double salario, double bon)
-        : Empleado(nombre, numero, salario) {
-        bono = bon;
+    CuentaAhorro(string num, string prop, double sal, double tasa)
+        : Cuenta(num, prop, sal), tasaInteres(tasa >= 0 ? tasa : 0) {}
+    
+    void generarInteres() {
+        double interes = saldo * tasaInteres;
+        saldo += interes;
+        cout << "Interés generado: $" << interes << endl;
     }
     
-    // Calcular salario total
-    double calcularSalarioTotal() override {
-        return salarioBase + bono;
-    }
-    
-    // Mostrar información modificada - sin beneficios
     void mostrarInfo() override {
-        Empleado::mostrarInfo();
-        cout << "Bono: $" << fixed << setprecision(2) << bono << endl;
-        cout << "Salario total: $" << calcularSalarioTotal() << endl;
+        cout << "AHORRO - ";
+        Cuenta::mostrarInfo();
+        cout << "Tasa: " << (tasaInteres * 100) << "%" << endl;
     }
 };
 
-// Clase EmpleadoPorHoras (sin cambios)
-class EmpleadoPorHoras : public Empleado {
+class CuentaCorriente : public Cuenta {
 private:
-    int horasTrabajadas;
-    double tarifaPorHora;
+    double limiteDescubierto;
 
 public:
-    // Constructor
-    EmpleadoPorHoras(string nombre, string numero, double salario, int horas, double tarifa)
-        : Empleado(nombre, numero, salario) {
-        horasTrabajadas = horas;
-        tarifaPorHora = tarifa;
+    CuentaCorriente(string num, string prop, double sal, double limite)
+        : Cuenta(num, prop, sal), limiteDescubierto(limite >= 0 ? limite : 0) {}
+    
+    void retirar(double monto) override {
+        if(monto > 0 && monto <= (saldo + limiteDescubierto)) {
+            saldo -= monto;
+            cout << "Retiro exitoso: $" << monto << endl;
+            if(saldo < 0) cout << "Descubierto: $" << -saldo << endl;
+        } else {
+            cout << "Límite excedido" << endl;
+        }
     }
     
-    // Calcular salario total
-    double calcularSalarioTotal() override {
-        return horasTrabajadas * tarifaPorHora;
-    }
-    
-    // Mostrar información
     void mostrarInfo() override {
-        Empleado::mostrarInfo();
-        cout << "Horas trabajadas: " << horasTrabajadas << endl;
-        cout << "Tarifa por hora: $" << fixed << setprecision(2) << tarifaPorHora << endl;
-        cout << "Salario total: $" << calcularSalarioTotal() << endl;
+        cout << "CORRIENTE - ";
+        Cuenta::mostrarInfo();
+        cout << "Límite: $" << limiteDescubierto << endl;
     }
 };
 
-int main() {
+void mostrarMenuCuenta(Cuenta* cuenta, bool esAhorro) {
     int opcion;
     
-    cout << "=== SISTEMA DE REGISTRO DE EMPLEADOS ===" << endl;
-    cout << "Que tipo de empleado deseas registrar?" << endl;
-    cout << "1. Empleado Tiempo Completo" << endl;
-    cout << "2. Empleado Por Horas" << endl;
-    cout << "Opcion: ";
+    do {
+        cout << "\n--- OPERACIONES ---" << endl;
+        cout << "1. Depositar" << endl;
+        cout << "2. Retirar" << endl;
+        if(esAhorro) {
+            cout << "3. Generar interés" << endl;
+            cout << "4. Mostrar información" << endl;
+            cout << "5. Salir" << endl;
+        } else {
+            cout << "3. Mostrar información" << endl;
+            cout << "4. Salir" << endl;
+        }
+        cout << "Opción: ";
+        cin >> opcion;
+        
+        double monto;
+        switch(opcion) {
+            case 1:
+                cout << "Monto: $"; cin >> monto;
+                cuenta->depositar(monto);
+                break;
+            case 2:
+                cout << "Monto: $"; cin >> monto;
+                cuenta->retirar(monto);
+                break;
+            case 3:
+                if(esAhorro) {
+                    dynamic_cast<CuentaAhorro*>(cuenta)->generarInteres();
+                } else {
+                    cuenta->mostrarInfo();
+                }
+                break;
+            case 4:
+                if(esAhorro) {
+                    cuenta->mostrarInfo();
+                } else {
+                    return;
+                }
+                break;
+            case 5:
+                if(esAhorro) return;
+        }
+    } while(true);
+}
+
+int main() {
+    cout << "=== SISTEMA BANCARIO ===" << endl;
+    cout << "1. Cuenta Ahorro\n2. Cuenta Corriente\nOpción: ";
+    
+    int opcion;
     cin >> opcion;
     cin.ignore();
     
-    if (opcion == 1) {
-        // Registrar empleado tiempo completo - MODIFICADO
-        string nombre, numero;
-        double salario, bono;
-        
-        cout << "\n--- REGISTRO EMPLEADO TIEMPO COMPLETO ---" << endl;
-        cout << "Ingrese el nombre completo: ";
-        getline(cin, nombre);
-        cout << "Ingrese el numero de empleado: ";
-        getline(cin, numero);
-        cout << "Ingrese el salario base: $";
-        cin >> salario;
-        cout << "Ingrese el bono: $";  // Solo pedimos bono, no beneficios
-        cin >> bono;
-        
-        // Crear el objeto - MODIFICADO (sin beneficios)
-        EmpleadoTiempoCompleto emp1(nombre, numero, salario, bono);
-        
-        // Mostrar información
-        cout << "\n--- EMPLEADO REGISTRADO ---" << endl;
-        emp1.mostrarInfo();
-        
-    } else if (opcion == 2) {
-        // Registrar empleado por horas (sin cambios)
-        string nombre, numero;
-        double salario, tarifa;
-        int horas;
-        
-        cout << "\n--- REGISTRO EMPLEADO POR HORAS ---" << endl;
-        cout << "Ingrese el nombre completo: ";
-        getline(cin, nombre);
-        cout << "Ingrese el numero de empleado: ";
-        getline(cin, numero);
-        cout << "Ingrese el salario base (puede ser 0): $";
-        cin >> salario;
-        cout << "Ingrese las horas trabajadas: ";
-        cin >> horas;
-        cout << "Ingrese la tarifa por hora: $";
-        cin >> tarifa;
-        
-        // Crear el objeto
-        EmpleadoPorHoras emp2(nombre, numero, salario, horas, tarifa);
-        
-        // Mostrar información
-        cout << "\n--- EMPLEADO REGISTRADO ---" << endl;
-        emp2.mostrarInfo();
-        
+    string num, prop;
+    double saldo, extra;
+    
+    cout << "Número cuenta: "; getline(cin, num);
+    cout << "Propietario: "; getline(cin, prop);
+    cout << "Saldo inicial: $"; cin >> saldo;
+    
+    Cuenta* cuenta;
+    
+    if(opcion == 1) {
+        cout << "Tasa interés: "; cin >> extra;
+        cuenta = new CuentaAhorro(num, prop, saldo, extra);
+        mostrarMenuCuenta(cuenta, true);
     } else {
-        cout << "Opcion no valida." << endl;
+        cout << "Límite descubierto: $"; cin >> extra;
+        cuenta = new CuentaCorriente(num, prop, saldo, extra);
+        mostrarMenuCuenta(cuenta, false);
     }
     
-    cout << "\nGracias por usar el sistema bancario, cuida tu dinero!" << endl;
-    
+    delete cuenta;
+    cout << "\n¡Gracias!" << endl;
     return 0;
 }
