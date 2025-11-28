@@ -1,0 +1,471 @@
+#include <iostream>
+#include <string>
+#include <iomanip>
+#include <vector>
+using namespace std;
+
+// Clase Curso
+class Curso {
+private:
+    string codigo;
+    string nombre;
+    int creditos;
+    string profesor;
+    double calificacion;
+public:
+    Curso(string cod, string nom, int cred, string prof) {
+        codigo = cod;
+        nombre = nom;
+        creditos = cred;
+        profesor = prof;
+        calificacion = 0.0;
+    }
+    
+    // Getters
+    string getCodigo() const { return codigo; }
+    string getNombre() const { return nombre; }
+    int getCreditos() const { return creditos; }
+    string getProfesor() const { return profesor; }
+    double getCalificacion() const { return calificacion; }
+    
+    // Setters
+    void setCalificacion(double cal) {
+        if (cal >= 0 && cal <= 5) {
+            calificacion = cal;
+        } else {
+            cout << "Error: La calificación debe estar entre 0 y 5." << endl;
+        }
+    }
+    
+    void mostrarInfo() {
+        cout << "  - " << nombre << " (" << codigo << ")" << endl;
+        cout << "    Créditos: " << creditos << ", Profesor: " << profesor << endl;
+        if (calificacion > 0) {
+            cout << "    Calificación: " << fixed << setprecision(2) << calificacion << endl;
+        }
+    }
+};
+
+// Clase base Persona
+class Persona {
+protected:
+    string nombre;
+    int edad;
+    string cedula;
+public:
+    Persona(string nom, int ed, string ced) {
+        nombre = nom;
+        setEdad(ed);
+        cedula = ced;
+    }
+    
+    virtual ~Persona() {}
+    
+    // Getters
+    string getNombre() const { return nombre; }
+    int getEdad() const { return edad; }
+    string getCedula() const { return cedula; }
+    
+    // Setters
+    void setNombre(string nom) { nombre = nom; }
+    void setEdad(int ed) {
+        if (ed > 0 && ed < 120) {
+            edad = ed;
+        } else {
+            cout << "Error: Edad inválida." << endl;
+            edad = 18;
+        }
+    }
+    void setCedula(string ced) { cedula = ced; }
+    
+    virtual void mostrarInfo() {
+        cout << "Nombre: " << nombre << endl;
+        cout << "Edad: " << edad << " años" << endl;
+        cout << "Cédula: " << cedula << endl;
+    }
+};
+
+// Clase Estudiante
+class Estudiante : public Persona {
+private:
+    string carrera;
+    double promedio;
+    int semestre;
+    vector<Curso> cursos;
+public:
+    Estudiante(string nom, int ed, string ced, string carr, double prom, int sem)
+        : Persona(nom, ed, ced) {
+        carrera = carr;
+        setPromedio(prom);
+        setSemestre(sem);
+    }
+    
+    // Getters
+    string getCarrera() const { return carrera; }
+    double getPromedio() const { return promedio; }
+    int getSemestre() const { return semestre; }
+    
+    // Setters
+    void setCarrera(string carr) { carrera = carr; }
+    void setPromedio(double prom) {
+        if (prom >= 0 && prom <= 5) {
+            promedio = prom;
+        } else {
+            cout << "Error: El promedio debe estar entre 0 y 5." << endl;
+            promedio = 0;
+        }
+    }
+    void setSemestre(int sem) {
+        if (sem > 0) {
+            semestre = sem;
+        } else {
+            cout << "Error: Semestre inválido." << endl;
+            semestre = 1;
+        }
+    }
+    
+    // Matricular curso
+    void matricularCurso(string codigo, string nombre, int creditos, string profesor) {
+        Curso nuevoCurso(codigo, nombre, creditos, profesor);
+        cursos.push_back(nuevoCurso);
+        cout << "Curso matriculado exitosamente: " << nombre << endl;
+    }
+    
+    // Asignar calificación a un curso
+    void asignarCalificacion(string codigo, double calificacion) {
+        bool encontrado = false;
+        for (int i = 0; i < cursos.size(); i++) {
+            if (cursos[i].getCodigo() == codigo) {
+                cursos[i].setCalificacion(calificacion);
+                cout << "Calificación asignada al curso " << cursos[i].getNombre() << endl;
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado) {
+            cout << "Curso no encontrado." << endl;
+        }
+    }
+    
+    // Ver cursos matriculados
+    void verCursos() {
+        if (cursos.empty()) {
+            cout << "No hay cursos matriculados." << endl;
+        } else {
+            cout << "Cursos matriculados:" << endl;
+            for (int i = 0; i < cursos.size(); i++) {
+                cursos[i].mostrarInfo();
+            }
+        }
+    }
+    
+    // Calcular promedio actual
+    double calcularPromedioActual() {
+        if (cursos.empty()) {
+            return promedio;
+        }
+        
+        double suma = 0;
+        int total = 0;
+        for (int i = 0; i < cursos.size(); i++) {
+            if (cursos[i].getCalificacion() > 0) {
+                suma += cursos[i].getCalificacion();
+                total++;
+            }
+        }
+        
+        if (total > 0) {
+            return suma / total;
+        }
+        return promedio;
+    }
+    
+    void mostrarInfo() override {
+        cout << "=== ESTUDIANTE ===" << endl;
+        Persona::mostrarInfo();
+        cout << "Carrera: " << carrera << endl;
+        cout << "Semestre: " << semestre << endl;
+        cout << "Promedio: " << fixed << setprecision(2) << promedio << endl;
+        cout << "Promedio actual: " << fixed << setprecision(2) << calcularPromedioActual() << endl;
+    }
+};
+
+// Clase Profesor
+class Profesor : public Persona {
+private:
+    string especialidad;
+    int aniosExperiencia;
+    int numeroEstudiantes;
+public:
+    Profesor(string nom, int ed, string ced, string esp, int anios, int numEst)
+        : Persona(nom, ed, ced) {
+        especialidad = esp;
+        setAniosExperiencia(anios);
+        setNumeroEstudiantes(numEst);
+    }
+    
+    // Getters
+    string getEspecialidad() const { return especialidad; }
+    int getAniosExperiencia() const { return aniosExperiencia; }
+    int getNumeroEstudiantes() const { return numeroEstudiantes; }
+    
+    // Setters
+    void setEspecialidad(string esp) { especialidad = esp; }
+    void setAniosExperiencia(int anios) {
+        if (anios >= 0) {
+            aniosExperiencia = anios;
+        } else {
+            cout << "Error: Años de experiencia inválidos." << endl;
+            aniosExperiencia = 0;
+        }
+    }
+    void setNumeroEstudiantes(int num) {
+        if (num >= 0) {
+            numeroEstudiantes = num;
+        } else {
+            cout << "Error: Número de estudiantes inválido." << endl;
+            numeroEstudiantes = 0;
+        }
+    }
+    
+    // Verificar disponibilidad
+    bool estaDisponible(int horaDelDia) {
+        // Horario de disponibilidad: 8am - 6pm
+        if (horaDelDia >= 8 && horaDelDia <= 18) {
+            return true;
+        }
+        return false;
+    }
+    
+    void mostrarInfo() override {
+        cout << "=== PROFESOR ===" << endl;
+        Persona::mostrarInfo();
+        cout << "Especialidad: " << especialidad << endl;
+        cout << "Años de experiencia: " << aniosExperiencia << endl;
+        cout << "Número de estudiantes: " << numeroEstudiantes << endl;
+    }
+};
+
+// Clase Personal
+class Personal : public Persona {
+private:
+    string puesto;
+    string departamento;
+    double salario;
+public:
+    Personal(string nom, int ed, string ced, string pues, string dept, double sal)
+        : Persona(nom, ed, ced) {
+        puesto = pues;
+        departamento = dept;
+        setSalario(sal);
+    }
+    
+    // Getters
+    string getPuesto() const { return puesto; }
+    string getDepartamento() const { return departamento; }
+    double getSalario() const { return salario; }
+    
+    // Setters
+    void setPuesto(string pues) { puesto = pues; }
+    void setDepartamento(string dept) { departamento = dept; }
+    void setSalario(double sal) {
+        if (sal > 0) {
+            salario = sal;
+        } else {
+            cout << "Error: El salario debe ser positivo." << endl;
+            salario = 0;
+        }
+    }
+    
+    // Calcular salario mensual
+    double calcularSalarioMensual() {
+        return salario;
+    }
+    
+    void mostrarInfo() override {
+        cout << "=== PERSONAL ADMINISTRATIVO ===" << endl;
+        Persona::mostrarInfo();
+        cout << "Puesto: " << puesto << endl;
+        cout << "Departamento: " << departamento << endl;
+        cout << "Salario mensual: $" << fixed << setprecision(2) << salario << endl;
+    }
+};
+
+int main() {
+    int opcion;
+    
+    cout << "=== SISTEMA UNIVERSITARIO ===" << endl;
+    cout << "Que tipo de persona deseas registrar?" << endl;
+    cout << "1. Estudiante" << endl;
+    cout << "2. Profesor" << endl;
+    cout << "3. Personal Administrativo" << endl;
+    cout << "Opcion: ";
+    cin >> opcion;
+    cin.ignore();
+    
+    if (opcion == 1) {
+        // Registrar estudiante
+        string nombre, cedula, carrera;
+        int edad, semestre;
+        double promedio;
+        
+        cout << "\n--- REGISTRO DE ESTUDIANTE ---" << endl;
+        cout << "Nombre completo: ";
+        getline(cin, nombre);
+        cout << "Edad: ";
+        cin >> edad;
+        cin.ignore();
+        cout << "Cédula: ";
+        getline(cin, cedula);
+        cout << "Carrera: ";
+        getline(cin, carrera);
+        cout << "Semestre: ";
+        cin >> semestre;
+        cout << "Promedio: ";
+        cin >> promedio;
+        
+        Estudiante estudiante(nombre, edad, cedula, carrera, promedio, semestre);
+        
+        // Menú de operaciones
+        int operacion;
+        do {
+            cout << "\n--- MENU ESTUDIANTE ---" << endl;
+            cout << "1. Matricular curso" << endl;
+            cout << "2. Asignar calificación a curso" << endl;
+            cout << "3. Ver cursos matriculados" << endl;
+            cout << "4. Calcular promedio actual" << endl;
+            cout << "5. Mostrar información completa" << endl;
+            cout << "6. Salir" << endl;
+            cout << "Opcion: ";
+            cin >> operacion;
+            cin.ignore();
+            
+            if (operacion == 1) {
+                string codigo, nombreCurso, profesor;
+                int creditos;
+                cout << "Código del curso: ";
+                getline(cin, codigo);
+                cout << "Nombre del curso: ";
+                getline(cin, nombreCurso);
+                cout << "Créditos: ";
+                cin >> creditos;
+                cin.ignore();
+                cout << "Nombre del profesor: ";
+                getline(cin, profesor);
+                estudiante.matricularCurso(codigo, nombreCurso, creditos, profesor);
+            } else if (operacion == 2) {
+                string codigo;
+                double calificacion;
+                cout << "Código del curso: ";
+                getline(cin, codigo);
+                cout << "Calificación (0-5): ";
+                cin >> calificacion;
+                estudiante.asignarCalificacion(codigo, calificacion);
+            } else if (operacion == 3) {
+                estudiante.verCursos();
+            } else if (operacion == 4) {
+                cout << "Promedio actual: " << fixed << setprecision(2) 
+                     << estudiante.calcularPromedioActual() << endl;
+            } else if (operacion == 5) {
+                cout << endl;
+                estudiante.mostrarInfo();
+            }
+        } while (operacion != 6);
+        
+    } else if (opcion == 2) {
+        // Registrar profesor
+        string nombre, cedula, especialidad;
+        int edad, anios, numEstudiantes;
+        
+        cout << "\n--- REGISTRO DE PROFESOR ---" << endl;
+        cout << "Nombre completo: ";
+        getline(cin, nombre);
+        cout << "Edad: ";
+        cin >> edad;
+        cin.ignore();
+        cout << "Cédula: ";
+        getline(cin, cedula);
+        cout << "Especialidad: ";
+        getline(cin, especialidad);
+        cout << "Años de experiencia: ";
+        cin >> anios;
+        cout << "Número de estudiantes: ";
+        cin >> numEstudiantes;
+        
+        Profesor profesor(nombre, edad, cedula, especialidad, anios, numEstudiantes);
+        
+        // Menú de operaciones
+        int operacion;
+        do {
+            cout << "\n--- MENU PROFESOR ---" << endl;
+            cout << "1. Verificar disponibilidad" << endl;
+            cout << "2. Mostrar información" << endl;
+            cout << "3. Salir" << endl;
+            cout << "Opcion: ";
+            cin >> operacion;
+            
+            if (operacion == 1) {
+                int hora;
+                cout << "Ingrese la hora (formato 24h, ej: 14 para 2pm): ";
+                cin >> hora;
+                if (profesor.estaDisponible(hora)) {
+                    cout << "El profesor está disponible a las " << hora << ":00" << endl;
+                } else {
+                    cout << "El profesor NO está disponible a las " << hora << ":00" << endl;
+                    cout << "Horario de atención: 8:00 - 18:00" << endl;
+                }
+            } else if (operacion == 2) {
+                cout << endl;
+                profesor.mostrarInfo();
+            }
+        } while (operacion != 3);
+        
+    } else if (opcion == 3) {
+        // Registrar personal
+        string nombre, cedula, puesto, departamento;
+        int edad;
+        double salario;
+        
+        cout << "\n--- REGISTRO DE PERSONAL ADMINISTRATIVO ---" << endl;
+        cout << "Nombre completo: ";
+        getline(cin, nombre);
+        cout << "Edad: ";
+        cin >> edad;
+        cin.ignore();
+        cout << "Cédula: ";
+        getline(cin, cedula);
+        cout << "Puesto: ";
+        getline(cin, puesto);
+        cout << "Departamento: ";
+        getline(cin, departamento);
+        cout << "Salario mensual: $";
+        cin >> salario;
+        
+        Personal personal(nombre, edad, cedula, puesto, departamento, salario);
+        
+        // Menú de operaciones
+        int operacion;
+        do {
+            cout << "\n--- MENU PERSONAL ---" << endl;
+            cout << "1. Calcular salario mensual" << endl;
+            cout << "2. Mostrar información" << endl;
+            cout << "3. Salir" << endl;
+            cout << "Opcion: ";
+            cin >> operacion;
+            
+            if (operacion == 1) {
+                cout << "Salario mensual: $" << fixed << setprecision(2) 
+                     << personal.calcularSalarioMensual() << endl;
+            } else if (operacion == 2) {
+                cout << endl;
+                personal.mostrarInfo();
+            }
+        } while (operacion != 3);
+        
+    } else {
+        cout << "Opcion no valida." << endl;
+    }
+    
+    cout << "\nGracias por usar el sistema universitario!" << endl;
+    
+    return 0;
