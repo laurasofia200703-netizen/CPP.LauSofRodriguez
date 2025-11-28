@@ -1,0 +1,163 @@
+#include <iostream>
+#include <string>
+#include <iomanip>
+using namespace std;
+
+// Clase base Empleado
+class Empleado {
+protected:
+    string nombreCompleto;
+    string numeroEmpleado;
+    double salarioBase;
+
+public:
+    // Constructor
+    Empleado(string nombre, string numero, double salario) {
+        nombreCompleto = nombre;
+        numeroEmpleado = numero;
+        salarioBase = salario;
+    }
+    
+    // Getters
+    string getNombreCompleto() { return nombreCompleto; }
+    string getNumeroEmpleado() { return numeroEmpleado; }
+    double getSalarioBase() { return salarioBase; }
+    
+    // Método virtual para calcular salario
+    virtual double calcularSalarioTotal() {
+        return salarioBase;
+    }
+    
+    // Método virtual para mostrar información
+    virtual void mostrarInfo() {
+        cout << "Nombre: " << nombreCompleto << endl;
+        cout << "Número de empleado: " << numeroEmpleado << endl;
+        cout << "Salario base: $" << fixed << setprecision(2) << salarioBase << endl;
+    }
+};
+
+// Clase EmpleadoTiempoCompleto
+class EmpleadoTiempoCompleto : public Empleado {
+private:
+    string beneficios;
+    double bono;
+
+public:
+    // Constructor
+    EmpleadoTiempoCompleto(string nombre, string numero, double salario, string benef, double bon)
+        : Empleado(nombre, numero, salario) {
+        beneficios = benef;
+        bono = bon;
+    }
+    
+    // Calcular salario total
+    double calcularSalarioTotal() override {
+        return salarioBase + bono;
+    }
+    
+    // Mostrar información
+    void mostrarInfo() override {
+        Empleado::mostrarInfo();
+        cout << "Beneficios: " << beneficios << endl;
+        cout << "Bono: $" << fixed << setprecision(2) << bono << endl;
+        cout << "Salario total: $" << calcularSalarioTotal() << endl;
+    }
+};
+
+// Clase EmpleadoPorHoras
+class EmpleadoPorHoras : public Empleado {
+private:
+    int horasTrabajadas;
+    double tarifaPorHora;
+
+public:
+    // Constructor
+    EmpleadoPorHoras(string nombre, string numero, double salario, int horas, double tarifa)
+        : Empleado(nombre, numero, salario) {
+        horasTrabajadas = horas;
+        tarifaPorHora = tarifa;
+    }
+    
+    // Calcular salario total
+    double calcularSalarioTotal() override {
+        return horasTrabajadas * tarifaPorHora;
+    }
+    
+    // Mostrar información
+    void mostrarInfo() override {
+        Empleado::mostrarInfo();
+        cout << "Horas trabajadas: " << horasTrabajadas << endl;
+        cout << "Tarifa por hora: $" << fixed << setprecision(2) << tarifaPorHora << endl;
+        cout << "Salario total: $" << calcularSalarioTotal() << endl;
+    }
+};
+
+int main() {
+    int opcion;
+    
+    cout << "=== SISTEMA DE REGISTRO DE EMPLEADOS ===" << endl;
+    cout << "Que tipo de empleado deseas registrar?" << endl;
+    cout << "1. Empleado Tiempo Completo" << endl;
+    cout << "2. Empleado Por Horas" << endl;
+    cout << "Opcion: ";
+    cin >> opcion;
+    cin.ignore();
+    
+    if (opcion == 1) {
+        // Registrar empleado tiempo completo
+        string nombre, numero, beneficios;
+        double salario, bono;
+        
+        cout << "\n--- REGISTRO EMPLEADO TIEMPO COMPLETO ---" << endl;
+        cout << "Ingrese el nombre completo: ";
+        getline(cin, nombre);
+        cout << "Ingrese el numero de empleado: ";
+        getline(cin, numero);
+        cout << "Ingrese el salario base: $";
+        cin >> salario;
+        cin.ignore();
+        cout << "Ingrese los beneficios (Ej: Seguro medico, vacaciones): ";
+        getline(cin, beneficios);
+        cout << "Ingrese el bono: $";
+        cin >> bono;
+        
+        // Crear el objeto
+        EmpleadoTiempoCompleto emp1(nombre, numero, salario, beneficios, bono);
+        
+        // Mostrar información
+        cout << "\n--- EMPLEADO REGISTRADO ---" << endl;
+        emp1.mostrarInfo();
+        
+    } else if (opcion == 2) {
+        // Registrar empleado por horas
+        string nombre, numero;
+        double salario, tarifa;
+        int horas;
+        
+        cout << "\n--- REGISTRO EMPLEADO POR HORAS ---" << endl;
+        cout << "Ingrese el nombre completo: ";
+        getline(cin, nombre);
+        cout << "Ingrese el numero de empleado: ";
+        getline(cin, numero);
+        cout << "Ingrese el salario base (puede ser 0): $";
+        cin >> salario;
+        cout << "Ingrese las horas trabajadas: ";
+        cin >> horas;
+        cout << "Ingrese la tarifa por hora: $";
+        cin >> tarifa;
+        
+        // Crear el objeto
+        EmpleadoPorHoras emp2(nombre, numero, salario, horas, tarifa);
+        
+        // Mostrar información
+        cout << "\n--- EMPLEADO REGISTRADO ---" << endl;
+        emp2.mostrarInfo();
+        
+    } else {
+        cout << "Opcion no valida." << endl;
+    }
+    
+    cout << "\nGracias por usar el sistema!" << endl;
+    
+    return 0;
+}
