@@ -1,0 +1,231 @@
+#include <iostream>
+#include <string>
+#include <iomanip>
+using namespace std;
+
+class Animal {
+protected:
+    string nombre;
+    int edad;
+    double peso;
+public:
+    Animal(string n, int e, double p) {
+        nombre = n;
+        setEdad(e);
+        setPeso(p);
+    }
+    
+    virtual ~Animal() {}
+    
+    // Getters
+    string getNombre() const { return nombre; }
+    int getEdad() const { return edad; }
+    double getPeso() const { return peso; }
+    // Setters
+    void setNombre(string n) { nombre = n; }
+    void setEdad(int e) {
+        if (e >= 0) {
+            edad = e;
+        } else {
+            cout << "Error: La edad no puede ser negativa. Se establecerá a 0." << endl;
+            edad = 0;
+        }
+    }
+    void setPeso(double p) {
+        if (p > 0) {
+            peso = p;
+        } else {
+            cout << "Error: El peso debe ser positivo. Se establecerá a 1.0." << endl;
+            peso = 1.0;
+        }
+    }
+    // Métodos virtuales
+    virtual void hacerSonido() {
+        cout << "El animal hace un sonido." << endl;
+    }
+    virtual void mostrarInfo() {
+        cout << "Nombre: " << nombre << ", Edad: " << edad << " años, Peso: " 
+             << fixed << setprecision(2) << peso << " kg" << endl;
+    }
+};
+
+class Mamifero : public Animal {
+protected:
+    bool tieneColaMamifero;
+public:
+    Mamifero(string n, int e, double p, bool cola) : Animal(n, e, p) {
+        tieneColaMamifero = cola;
+    }
+    // Getters y setters
+    bool getTieneColaMamifero() const { return tieneColaMamifero; }
+    void setTieneColaMamifero(bool cola) { tieneColaMamifero = cola; }
+    // Sobrescribir métodos
+    void hacerSonido() override {
+        cout << "El mamífero hace un sonido." << endl;
+    }
+    void mostrarInfo() override {
+        Animal::mostrarInfo();
+        cout << "Tiene cola: " << (tieneColaMamifero ? "Sí" : "No") << endl;
+    }
+};
+
+class Ave : public Animal {
+protected:
+    double envergaduraAlas;
+public:
+    Ave(string n, int e, double p, double envergadura) : Animal(n, e, p) {
+        setEnvergaduraAlas(envergadura);
+    }
+    // Getters y setters
+    double getEnvergaduraAlas() const { return envergaduraAlas; }
+    void setEnvergaduraAlas(double e) {
+        if (e > 0) {
+            envergaduraAlas = e;
+        } else {
+            cout << "Error: La envergadura debe ser positiva. Se establecerá a 1.0." << endl;
+            envergaduraAlas = 1.0;
+        }
+    }
+    // Sobrescribir métodos
+    void hacerSonido() override {
+        cout << "El ave hace un sonido." << endl;
+    }
+    void mostrarInfo() override {
+        Animal::mostrarInfo();
+        cout << "Envergadura de alas: " << fixed << setprecision(2) << envergaduraAlas << " m" << endl;
+    }
+};
+
+class Perro : public Mamifero {
+public:
+    Perro(string n, int e, double p, bool cola) : Mamifero(n, e, p, cola) {}
+    void hacerSonido() override {
+        cout << "Guau guau!" << endl;
+    }
+    void mostrarInfo() override {
+        Mamifero::mostrarInfo();
+        cout << "Especie: Perro" << endl;
+    }
+};
+
+class Gato : public Mamifero {
+public:
+    Gato(string n, int e, double p, bool cola) : Mamifero(n, e, p, cola) {}
+    void hacerSonido() override {
+        cout << "Miau miau!" << endl;
+    }
+    void mostrarInfo() override {
+        Mamifero::mostrarInfo();
+        cout << "Especie: Gato" << endl;
+    }
+};
+
+class Loro : public Ave {
+public:
+    Loro(string n, int e, double p, double envergadura) : Ave(n, e, p, envergadura) {}
+    void hacerSonido() override {
+        cout << "El loro repite: ¡Hola!" << endl;
+    }
+    void mostrarInfo() override {
+        Ave::mostrarInfo();
+        cout << "Especie: Loro" << endl;
+    }
+};
+
+class Aguila : public Ave {
+public:
+    Aguila(string n, int e, double p, double envergadura) : Ave(n, e, p, envergadura) {}
+    void hacerSonido() override {
+        cout << "El águila emite un grito agudo." << endl;
+    }
+    void mostrarInfo() override {
+        Ave::mostrarInfo();
+        cout << "Especie: Águila" << endl;
+    }
+};
+
+int main() {
+    int opcion;
+    
+    cout << "=== SISTEMA DE REGISTRO DE ANIMALES ===" << endl;
+    cout << "Que tipo de animal deseas registrar?" << endl;
+    cout << "1. Perro" << endl;
+    cout << "2. Gato" << endl;
+    cout << "3. Loro" << endl;
+    cout << "4. Aguila" << endl;
+    cout << "Opcion: ";
+    cin >> opcion;
+    cin.ignore();
+    
+    string nombre;
+    int edad;
+    double peso;
+    
+    // Datos comunes para todos los animales
+    cout << "\nIngrese el nombre del animal: ";
+    getline(cin, nombre);
+    cout << "Ingrese la edad (años): ";
+    cin >> edad;
+    cout << "Ingrese el peso (kg): ";
+    cin >> peso;
+    
+    if (opcion == 1) {
+        // Registrar Perro
+        int tieneCola;
+        cout << "Tiene cola? (1 = Si, 0 = No): ";
+        cin >> tieneCola;
+        
+        Perro miPerro(nombre, edad, peso, tieneCola == 1);
+        
+        cout << "\n--- ANIMAL REGISTRADO ---" << endl;
+        miPerro.mostrarInfo();
+        cout << "Sonido: ";
+        miPerro.hacerSonido();
+        
+    } else if (opcion == 2) {
+        // Registrar Gato
+        int tieneCola;
+        cout << "Tiene cola? (1 = Si, 0 = No): ";
+        cin >> tieneCola;
+        
+        Gato miGato(nombre, edad, peso, tieneCola == 1);
+        
+        cout << "\n--- ANIMAL REGISTRADO ---" << endl;
+        miGato.mostrarInfo();
+        cout << "Sonido: ";
+        miGato.hacerSonido();
+        
+    } else if (opcion == 3) {
+        // Registrar Loro
+        double envergadura;
+        cout << "Ingrese la envergadura de las alas (metros): ";
+        cin >> envergadura;
+        
+        Loro miLoro(nombre, edad, peso, envergadura);
+        
+        cout << "\n--- ANIMAL REGISTRADO ---" << endl;
+        miLoro.mostrarInfo();
+        cout << "Sonido: ";
+        miLoro.hacerSonido();
+        
+    } else if (opcion == 4) {
+        // Registrar Aguila
+        double envergadura;
+        cout << "Ingrese la envergadura de las alas (metros): ";
+        cin >> envergadura;
+        
+        Aguila miAguila(nombre, edad, peso, envergadura);
+        
+        cout << "\n--- ANIMAL REGISTRADO ---" << endl;
+        miAguila.mostrarInfo();
+        cout << "Sonido: ";
+        miAguila.hacerSonido();
+        
+    } else {
+        cout << "Opcion no valida." << endl;
+    }
+    
+    cout << "\nGracias por usar el sistema!" << endl;
+    
+    return 0;
+}
