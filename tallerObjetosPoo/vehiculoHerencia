@@ -178,7 +178,7 @@ int main() {
         cout << "Opcion no valida." << endl;
     }
     
-    cout << "\nGracias por usar el sistema!" << endl;
+    cout << "\nGracias por usar el sistema para registrar tu vehículo!" << endl;
     
     return 0;
 }
