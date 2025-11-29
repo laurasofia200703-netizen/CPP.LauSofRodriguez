@@ -14,8 +14,7 @@ public:
         : numeroCuenta(num), propietario(prop), saldo(sal >= 0 ? sal : 0) {}
     
     virtual ~Cuenta() {}
-    
-    // Métodos virtuales
+     // Métodos virtuales
     virtual void depositar(double monto) {
         if(monto > 0) {
             saldo += monto;
@@ -60,7 +59,6 @@ public:
         cout << "Tasa: " << (tasaInteres * 100) << "%" << endl;
     }
 };
-
 class CuentaCorriente : public Cuenta {
 private:
     double limiteDescubierto;
@@ -133,7 +131,6 @@ void mostrarMenuCuenta(Cuenta* cuenta, bool esAhorro) {
         }
     } while(true);
 }
-
 int main() {
     cout << "=== SISTEMA BANCARIO ===" << endl;
     cout << "1. Cuenta Ahorro\n2. Cuenta Corriente\nOpción: ";
@@ -160,8 +157,7 @@ int main() {
         cuenta = new CuentaCorriente(num, prop, saldo, extra);
         mostrarMenuCuenta(cuenta, false);
     }
-    
-    delete cuenta;
+     delete cuenta;
     cout << "\n¡Gracias!" << endl;
     return 0;
 }
